@@ -2,10 +2,10 @@
 
 namespace ShootEmUp
 {
-    public sealed class CharacterFireObserver : MonoBehaviour
+    public sealed class CharacterFireController : MonoBehaviour
     {
         [SerializeField] private InputManager inputManager;
-        [SerializeField] private CharacterController characterController;
+        [SerializeField] private CharacterFireInteractor characterFireInteractor;
 
         private void OnEnable()
         {
@@ -19,7 +19,7 @@ namespace ShootEmUp
 
         private void OnFireEvent()
         {
-            characterController.Fire();
+            characterFireInteractor.Fire();
         }
     }
 }

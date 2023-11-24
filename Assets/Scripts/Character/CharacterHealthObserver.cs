@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ShootEmUp
 {
@@ -10,15 +9,15 @@ namespace ShootEmUp
 
         public void OnEnable()
         {
-            characterHitPoints.HpEmpty += OnHpEmpty;
+            characterHitPoints.OnHitPointsEmpty += OnOnHitPointsEmpty;
         }
 
         public void OnDisable()
         {
-            characterHitPoints.HpEmpty -= OnHpEmpty;
+            characterHitPoints.OnHitPointsEmpty -= OnOnHitPointsEmpty;
         }
 
-        private void OnHpEmpty(GameObject _)
+        private void OnOnHitPointsEmpty(GameObject _)
         {
             gameManager.FinishGame();
         }

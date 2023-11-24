@@ -5,19 +5,19 @@ namespace ShootEmUp
     public sealed class EnemyAttackAgent : MonoBehaviour
     {
         public delegate void FireHandler(GameObject enemy, Vector2 position, Vector2 direction);
-
         public event FireHandler OnFire;
+        
 
         [SerializeField] private WeaponComponent weaponComponent;
         [SerializeField] private EnemyMoveAgent moveAgent;
         [SerializeField] private float countdown;
 
-        private GameObject target;
+        private GameObject characterTarget;
         private float currentTime;
 
         public void SetTarget(GameObject target)
         {
-            this.target = target;
+            characterTarget = target;
         }
 
         public void Reset()
@@ -31,8 +31,8 @@ namespace ShootEmUp
             {
                 return;
             }
-            
-            if (!target.GetComponent<HitPointsComponent>().IsHitPointsExists())
+
+            if (!characterTarget.GetComponent<HitPointsComponent>().IsHitPointsExists())
             {
                 return;
             }
@@ -48,7 +48,7 @@ namespace ShootEmUp
         private void Fire()
         {
             var startPosition = weaponComponent.Position;
-            var vector = (Vector2) target.transform.position - startPosition;
+            var vector = (Vector2)characterTarget.transform.position - startPosition;
             var direction = vector.normalized;
             OnFire?.Invoke(gameObject, startPosition, direction);
         }

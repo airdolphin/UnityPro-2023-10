@@ -8,33 +8,38 @@ namespace ShootEmUp
     {
         [SerializeField] private EnemyPool enemyPool;
         [SerializeField] private BulletSystem bulletSystem;
-        private readonly HashSet<GameObject> m_activeEnemies = new();
+        [SerializeField] private BulletConfig bulletConfig;
+
+        private readonly HashSet<Enemy> activeEnemies = new();
+
+        private int delaySpawnTime = 1;
 
         private IEnumerator Start()
         {
             while (true)
             {
-                yield return new WaitForSeconds(1);
-                var enemy = enemyPool.SpawnEnemy();
-                if (enemy != null)
+                yield return new WaitForSeconds(delaySpawnTime);
+
+                Enemy enemy = enemyPool.TrySpawnEnemy();
+
+                if (activeEnemies.Add(enemy))
                 {
-                    if (m_activeEnemies.Add(enemy))
-                    {
-                        enemy.GetComponent<HitPointsComponent>().HpEmpty += OnDestroyed;
-                        enemy.GetComponent<EnemyAttackAgent>().OnFire += OnFire;
-                    }    
+                    enemy.GetComponent<HitPointsComponent>().OnHitPointsEmpty += OnDestroyed;
+                    enemy.GetComponent<EnemyAttackAgent>().OnFire += OnFire;
                 }
             }
         }
 
         private void OnDestroyed(GameObject enemy)
         {
-            if (m_activeEnemies.Remove(enemy))
+            Enemy enemyComponent = enemy.GetComponent<Enemy>();
+            
+            if (activeEnemies.Remove(enemyComponent))
             {
-                enemy.GetComponent<HitPointsComponent>().HpEmpty -= this.OnDestroyed;
-                enemy.GetComponent<EnemyAttackAgent>().OnFire -= this.OnFire;
+                enemy.GetComponent<HitPointsComponent>().OnHitPointsEmpty -= OnDestroyed;
+                enemy.GetComponent<EnemyAttackAgent>().OnFire -= OnFire;
 
-                enemyPool.UnspawnEnemy(enemy);
+                enemyPool.UnspawnEnemy(enemyComponent);
             }
         }
 
@@ -43,11 +48,11 @@ namespace ShootEmUp
             bulletSystem.FlyBulletByArgs(new BulletSystem.Args
             {
                 isPlayer = false,
-                physicsLayer = (int) PhysicsLayer.ENEMY_BULLET,
-                color = Color.red,
-                damage = 1,
+                physicsLayer = (int)bulletConfig.physicsLayer,
+                color = bulletConfig.color,
+                damage = bulletConfig.damage,
                 position = position,
-                velocity = direction * 2.0f
+                velocity = direction * bulletConfig.speed
             });
         }
     }

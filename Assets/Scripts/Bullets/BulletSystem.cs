@@ -5,34 +5,26 @@ namespace ShootEmUp
 {
     public sealed class BulletSystem : MonoBehaviour
     {
-        [SerializeField] private int initialCount = 50;
-
-        [SerializeField] private Transform container;
-        [SerializeField] private Bullet prefab;
-        [SerializeField] private Transform worldTransform;
         [SerializeField] private LevelBounds levelBounds;
-
-        private readonly Queue<Bullet> m_bulletPool = new();
-        private readonly HashSet<Bullet> m_activeBullets = new();
-        private readonly List<Bullet> m_cache = new();
-
-        private void Awake()
-        {
-            for (var i = 0; i < initialCount; i++)
-            {
-                var bullet = Instantiate(prefab, container);
-                m_bulletPool.Enqueue(bullet);
-            }
-        }
+        [SerializeField] private BulletPool bulletPool;
+        
+        // private readonly BulletPool bulletPool = new BulletPool();
+        private readonly HashSet<Bullet> activeBullets = new();
+        private readonly List<Bullet> cache = new();
 
         private void FixedUpdate()
         {
-            m_cache.Clear();
-            m_cache.AddRange(this.m_activeBullets);
+            CheckBulletInBounds();
+        }
 
-            for (int i = 0, count = this.m_cache.Count; i < count; i++)
+        private void CheckBulletInBounds()
+        {
+            cache.Clear();
+            cache.AddRange(this.activeBullets);
+
+            for (int i = 0, count = this.cache.Count; i < count; i++)
             {
-                var bullet = m_cache[i];
+                var bullet = cache[i];
                 if (!levelBounds.InBounds(bullet.transform.position))
                 {
                     RemoveBullet(bullet);
@@ -42,20 +34,18 @@ namespace ShootEmUp
 
         public void FlyBulletByArgs(Args args)
         {
-            if (m_bulletPool.TryDequeue(out var bullet))
-            {
-                bullet.transform.SetParent(worldTransform);
-            }
-            else
-            {
-                bullet = Instantiate(prefab, worldTransform);
-            }
+            var bullet = bulletPool.SpawnBullet();
 
             bullet.Init(
-                args.isPlayer, args.damage, args.velocity, args.physicsLayer, args.position, args.color
+                args.isPlayer,
+                args.damage,
+                args.velocity,
+                args.physicsLayer,
+                args.position,
+                args.color
             );
 
-            if (m_activeBullets.Add(bullet))
+            if (activeBullets.Add(bullet))
             {
                 bullet.OnCollisionEntered += OnBulletCollision;
             }
@@ -69,15 +59,16 @@ namespace ShootEmUp
 
         private void RemoveBullet(Bullet bullet)
         {
-            if (m_activeBullets.Remove(bullet))
+            if (activeBullets.Remove(bullet))
             {
                 bullet.OnCollisionEntered -= OnBulletCollision;
-                bullet.transform.SetParent(container);
-                m_bulletPool.Enqueue(bullet);
+                // bullet.transform.SetParent(container);
+                // bulletPool.Enqueue(bullet);
+                bulletPool.UnspawnBullet(bullet);
             }
         }
 
-        internal static void DealDamage(Bullet bullet, GameObject other)
+        private static void DealDamage(Bullet bullet, GameObject other)
         {
             if (!other.TryGetComponent(out TeamComponent team))
             {

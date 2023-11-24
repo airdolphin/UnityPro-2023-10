@@ -1,21 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class CharacterController : MonoBehaviour
+    public class CharacterFireInteractor : MonoBehaviour
     {
         [SerializeField] private WeaponComponent weapon;
         [SerializeField] private BulletSystem bulletSystem;
         [SerializeField] private BulletConfig bulletConfig;
-        
-        [SerializeField] private InputManager inputManager;
-        [SerializeField] private MoveComponent moveComponent;
-        
-
-        private void FixedUpdate()
-        {
-            Move();
-        }
 
         public void Fire()
         {
@@ -28,13 +19,6 @@ namespace ShootEmUp
                 position = weapon.Position,
                 velocity = weapon.Rotation * Vector3.up * bulletConfig.speed
             });
-        }
-
-        public void Move()
-        {
-            moveComponent.MoveByRigidbodyVelocity(
-                new Vector2(inputManager.HorizontalDirection, 0) * Time.fixedDeltaTime
-            );
         }
     }
 }
