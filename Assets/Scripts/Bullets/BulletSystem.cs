@@ -8,7 +8,6 @@ namespace ShootEmUp
         [SerializeField] private LevelBounds levelBounds;
         [SerializeField] private BulletPool bulletPool;
         
-        // private readonly BulletPool bulletPool = new BulletPool();
         private readonly HashSet<Bullet> activeBullets = new();
         private readonly List<Bullet> cache = new();
 
@@ -62,8 +61,6 @@ namespace ShootEmUp
             if (activeBullets.Remove(bullet))
             {
                 bullet.OnCollisionEntered -= OnBulletCollision;
-                // bullet.transform.SetParent(container);
-                // bulletPool.Enqueue(bullet);
                 bulletPool.UnspawnBullet(bullet);
             }
         }

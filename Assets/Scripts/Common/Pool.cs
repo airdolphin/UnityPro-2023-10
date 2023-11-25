@@ -4,7 +4,6 @@ using UnityEngine;
 namespace ShootEmUp
 {
     public sealed class Pool<T> where T : MonoBehaviour
-    // public class Pool<T> : MonoBehaviour where T : Object
     {
         private readonly T initPrefab;
         private readonly Transform initContainer;

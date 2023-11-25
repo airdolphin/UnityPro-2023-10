@@ -6,13 +6,13 @@ namespace ShootEmUp
     public sealed class InputManager : MonoBehaviour
     {
         public float HorizontalDirection { get; private set; }
-        public event Action FireEvent;
+        public event Action OnFire;
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                FireEvent?.Invoke();
+                OnFire?.Invoke();
             }
 
             if (Input.GetKey(KeyCode.LeftArrow))

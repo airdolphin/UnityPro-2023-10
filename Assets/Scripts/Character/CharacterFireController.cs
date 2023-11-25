@@ -9,15 +9,15 @@ namespace ShootEmUp
 
         private void OnEnable()
         {
-            inputManager.FireEvent += OnFireEvent;
+            inputManager.OnFire += OnFire;
         }
 
         private void OnDisable()
         {
-            inputManager.FireEvent -= OnFireEvent;
+            inputManager.OnFire -= OnFire;
         }
 
-        private void OnFireEvent()
+        private void OnFire()
         {
             characterFireInteractor.Fire();
         }
