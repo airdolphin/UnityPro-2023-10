@@ -1,14 +1,16 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ShootEmUp
 {
-    public sealed class InputManager : MonoBehaviour
+    public sealed class InputManager : MonoBehaviour,
+        GameListeners.IGameUpdateListener
     {
         public float HorizontalDirection { get; private set; }
         public event Action OnFire;
 
-        private void Update()
+        public void OnUpdate(float deltaTime)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {

@@ -3,15 +3,16 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class BulletSystem : MonoBehaviour
+    public sealed class BulletSystem : MonoBehaviour,
+        GameListeners.IGameFixedUpdateListener
     {
         [SerializeField] private LevelBounds levelBounds;
         [SerializeField] private BulletPool bulletPool;
-        
+
         private readonly HashSet<Bullet> activeBullets = new();
         private readonly List<Bullet> cache = new();
 
-        private void FixedUpdate()
+        public void OnFixedUpdate(float deltaTime)
         {
             CheckBulletInBounds();
         }

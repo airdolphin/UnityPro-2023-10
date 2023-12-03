@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class LevelBackground : MonoBehaviour
+    public sealed class LevelBackground : MonoBehaviour,
+        GameListeners.IGameFixedUpdateListener
     {
         private float startPositionY;
         private float endPositionY;
@@ -25,7 +26,7 @@ namespace ShootEmUp
             positionZ = position.z;
         }
 
-        private void FixedUpdate()
+        public void OnFixedUpdate(float deltaTime)
         {
             if (myTransform.position.y <= endPositionY)
             {

@@ -9,15 +9,15 @@ namespace ShootEmUp
 
         public void OnEnable()
         {
-            characterHitPoints.OnHitPointsEmpty += OnOnHitPointsEmpty;
+            characterHitPoints.OnHitPointsEmpty += OnHitPointsEmpty;
         }
 
         public void OnDisable()
         {
-            characterHitPoints.OnHitPointsEmpty -= OnOnHitPointsEmpty;
+            characterHitPoints.OnHitPointsEmpty -= OnHitPointsEmpty;
         }
 
-        private void OnOnHitPointsEmpty(GameObject _)
+        private void OnHitPointsEmpty(GameObject _)
         {
             gameManager.FinishGame();
         }

@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace ShootEmUp
 {
-    public sealed class EnemyMoveAgent : MonoBehaviour
+    public sealed class EnemyMoveAgent : MonoBehaviour,
+        GameListeners.IGameFixedUpdateListener
     {
         [SerializeField] private MoveComponent moveComponent;
 
@@ -16,7 +17,7 @@ namespace ShootEmUp
             IsReached = false;
         }
 
-        private void FixedUpdate()
+        public void OnFixedUpdate(float deltaTime)
         {
             if (IsReached)
             {

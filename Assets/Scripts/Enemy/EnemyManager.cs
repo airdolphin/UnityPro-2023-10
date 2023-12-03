@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,7 @@ namespace ShootEmUp
 {
     public sealed class EnemyManager : MonoBehaviour
     {
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private EnemyPool enemyPool;
         [SerializeField] private BulletSystem bulletSystem;
         [SerializeField] private BulletConfig bulletConfig;
@@ -14,26 +14,27 @@ namespace ShootEmUp
 
         private int delaySpawnTime = 1;
 
-        private IEnumerator Start()
+        public void Spawn()
         {
-            while (true)
+            Enemy enemy = enemyPool.TrySpawnEnemy();
+
+            if (activeEnemies.Add(enemy))
             {
-                yield return new WaitForSeconds(delaySpawnTime);
-
-                Enemy enemy = enemyPool.TrySpawnEnemy();
-
-                if (activeEnemies.Add(enemy))
-                {
-                    enemy.GetComponent<HitPointsComponent>().OnHitPointsEmpty += OnDestroyed;
-                    enemy.GetComponent<EnemyAttackAgent>().OnFire += OnFire;
-                }
+                var enemyMoveAgent = enemy.GetComponent<EnemyMoveAgent>();
+                var enemyAttackAgent = enemy.GetComponent<EnemyAttackAgent>();
+                
+                gameManager.AddListener(enemyMoveAgent);
+                gameManager.AddListener(enemyAttackAgent);
+                
+                enemy.GetComponent<HitPointsComponent>().OnHitPointsEmpty += OnDestroyed;
+                enemy.GetComponent<EnemyAttackAgent>().OnFire += OnFire;
             }
         }
 
         private void OnDestroyed(GameObject enemy)
         {
             Enemy enemyComponent = enemy.GetComponent<Enemy>();
-            
+
             if (activeEnemies.Remove(enemyComponent))
             {
                 enemy.GetComponent<HitPointsComponent>().OnHitPointsEmpty -= OnDestroyed;

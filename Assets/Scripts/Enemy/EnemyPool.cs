@@ -5,6 +5,7 @@ using UnityEngine;
 namespace ShootEmUp
 {
     public sealed class EnemyPool : MonoBehaviour
+        
     {
         [Header("Spawn")]
         [SerializeField] private EnemyPositions enemyPositions;
@@ -13,7 +14,7 @@ namespace ShootEmUp
         [Header("Pool")] 
         [SerializeField] private Transform container;
         [SerializeField] private Enemy prefab;
-        [SerializeField] private int enemyCount = 50;
+        [SerializeField] private int enemyCount = 7;
 
         private Pool<Enemy> enemyPool;
         public event Action<Enemy> OnEnemySpawned;
