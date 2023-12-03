@@ -28,17 +28,17 @@
 
         public interface IGameUpdateListener : IGameListener
         {
-            void OnUpdate(float timeDelta);
+            void OnUpdate(float deltaTime);
         }
 
         public interface IGameFixedUpdateListener : IGameListener
         {
-            void OnFixedUpdate(float fixedTimeDelta);
+            void OnFixedUpdate(float deltaTime);
         }
 
         public interface IGameLateUpdateListener : IGameListener
         {
-            void OnLateUpdate(float timeDelta);
+            void OnLateUpdate(float deltaTime);
         }
     }
 }
